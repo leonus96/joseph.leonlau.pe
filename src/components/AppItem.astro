@@ -1,0 +1,13 @@
+---
+import {Image} from 'astro:assets'
+import Badge from "./Badge.astro";
+const {title, href, image, inProgress} = Astro.props;
+---
+
+<a href={href} class=" rounded bg-zinc-100">
+    <Image src={image} class="rounded-t h-36 object-cover" alt=""/>
+    <h3 class="text-center text-sm  border-b border-r border-l border-zinc-200 rounded-b py-2">
+        {title}
+        {inProgress && <Badge text="En construcción" color="green"/>}
+    </h3>
+</a>

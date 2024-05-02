@@ -1,0 +1,13 @@
+---
+const {text, color} = Astro.props
+
+/// Classes from: https://tailwindui.com/components/application-ui/elements/badges
+function badgeClass(color) {
+    switch (color) {
+        case 'green':
+            return 'inline-flex items-center rounded-md bg-green-50 px-2 py text-[10px] text-green-700 ring-1 ring-inset ring-green-600/20'
+    }
+}
+---
+
+<span class={badgeClass(color)}>{text}</span>

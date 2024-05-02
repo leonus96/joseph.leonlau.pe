@@ -1,0 +1,11 @@
+---
+import {Image} from 'astro:assets'
+const {iconUrl, title, link} = Astro.props
+---
+<a class="rounded border border-zinc-300 p-0.5 text-sm bg-zinc-100"
+   href={link}
+   target="_blank"
+>
+    <Image width="12" height="12" src={iconUrl} alt="Flutter logo" class="inline-block align-baseline"/>
+    {title}
+</>

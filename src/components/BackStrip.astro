@@ -1,0 +1,12 @@
+---
+import LangToggle from './LangToggle.astro';
+import { type Lang, type RouteKey, path } from '../i18n';
+interface Props { lang: Lang; route: RouteKey; tone?: 'dark' | 'light'; }
+const { lang, route, tone = 'dark' } = Astro.props;
+---
+<div data-theme={tone} class:list={['border-b-4', tone === 'dark' ? 'bg-[#0e0b1a] border-[#f3eedf]' : 'bg-[#fff6e8] border-[#1b1626]']}>
+  <div class="wrap flex items-center justify-between gap-4 py-1.5">
+    <a class="pxlabel text-ink" href={path('home', lang)}>◀ Joseph León</a>
+    <LangToggle lang={lang} route={route} />
+  </div>
+</div>

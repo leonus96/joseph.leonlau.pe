@@ -1,0 +1,6 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Popback"><title>Popback</title>
+  <path d="M12 96V52a38 38 0 0 1 76 0v28" fill="none" stroke="#FF5B4A" stroke-width="10"/>
+  <path d="M23 96V52a27 27 0 0 1 54 0v28" fill="none" stroke="#FFD23F" stroke-width="10"/>
+  <path d="M34 96V52a16 16 0 0 1 32 0v28" fill="none" stroke="#3D5AFE" stroke-width="10"/>
+  <circle cx="77" cy="80" r="16" fill="#FFFFFF"/>
+</svg>

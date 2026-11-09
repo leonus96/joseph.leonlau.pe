@@ -1,0 +1,242 @@
+---
+import '@fontsource-variable/unbounded';
+import '@fontsource-variable/dm-sans';
+import Base from '../layouts/Base.astro';
+import BackStrip from '../components/BackStrip.astro';
+import { type Lang, path } from '../i18n';
+import { popback, site } from '../data/site';
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const beta = popback.betaUrl || `mailto:${site.email}?subject=Popback%20beta`;
+
+const t = {
+  es: {
+    title: 'Popback — Lo que guardas, sí vuelve',
+    description: 'Popback arma sesiones cortas con los videos, links y capturas que guardas, y te las ofrece antes de scrollear. Beta en diciembre de 2026.',
+    how: 'Cómo funciona', privacy: 'Privacidad', joinShort: 'Únete a la beta',
+    kicker: 'Beta cerrada · diciembre 2026',
+    h1: 'Lo que guardas, sí vuelve.',
+    lead: 'Videos, links, artículos y capturas que guardas para después. Popback arma sesiones que caben en tu tiempo libre y te las ofrece antes de ponerte a scrollear.',
+    cta: 'Quiero probar la beta',
+    chips: ['Android', 'iPhone', 'Gratis en la beta', 'Sin cuenta'],
+    mockQ: '¿Cuánto tiempo tienes?', mockCta: 'Arrancar sesión de 10 min',
+    mockSaved: 'guardado hace 3 días',
+    problemH: 'Guardas todo. Y casi nunca vuelves.',
+    problemP: '“Ver más tarde” en YouTube, guardados de TikTok e Instagram, capturas, links que te mandas por WhatsApp. Popback no compite en guardar: te ayuda a terminar lo que guardaste.',
+    problemChips: ['Ver más tarde', 'Guardados', 'Capturas', 'Links en WhatsApp'],
+    howH: 'Sesiones cortas, en el momento justo.',
+    steps: [
+      { k: '01 · Sesión', h: '“Tengo 10 minutos”', p: 'Elige 5, 10, 15 o 30 minutos y Popback arma una tanda que cabe en ese tiempo.' },
+      { k: '02 · Antes de scrollear', h: 'Tu yo del pasado te dejó 3 cosas (4 min).', p: 'Al abrir TikTok, Instagram o YouTube, te ofrece primero lo que guardaste. En Android es automático; en iPhone, con Atajos.' },
+      { k: '03 · Triaje', h: '¿Todavía vale la pena?', p: 'Lo que cumple 14 días sin revisar pasa a una pantalla de deslizar: revisar ahora, posponer 7 días o descartar.' },
+      { k: '04 · Recordatorio', h: 'Tienes 12 minutos de cosas para hoy.', p: 'Un aviso diario a la hora que elijas, siempre en minutos reales.' },
+      { k: '05 · Guardar', h: 'Desde donde estés.', p: 'Con el botón Compartir, desde la galería o pegando un link o texto. Y aprende cuánto te toma cada cosa.' },
+    ],
+    doneK: 'Al terminar', doneH: 'Todo revisado. Tu yo del futuro te debe una.',
+    privK: 'Privada por diseño', privH: 'Lo tuyo se queda en tu teléfono.', privLink: 'Leer la política de privacidad',
+    priv: [
+      { h: 'Sin cuenta, sin servidor', p: 'No hay login. Tu cola vive en una base de datos en el teléfono.' },
+      { h: 'Analítica anónima', p: 'Solo contamos uso de forma anónima. Nunca URLs, títulos ni lo que escribes.' },
+      { h: 'Permisos explicados', p: 'Cada permiso dice para qué es antes de pedírtelo.' },
+    ],
+    betaH: 'Entra a la beta.', betaP: 'Beta cerrada desde el 3 de diciembre de 2026 en Android y iPhone. Lugares limitados.', betaCta: 'Quiero mi lugar',
+    footer: 'Un proyecto de Joseph León', more: 'Más proyectos',
+  },
+  en: {
+    title: 'Popback — What you save comes back',
+    description: 'Popback builds short sessions from the videos, links and screenshots you save, and offers them before you start scrolling. Beta in December 2026.',
+    how: 'How it works', privacy: 'Privacy', joinShort: 'Join the beta',
+    kicker: 'Closed beta · December 2026',
+    h1: 'What you save comes back.',
+    lead: 'Videos, links, articles and screenshots you save for later. Popback builds sessions that fit your free time and offers them right before you start scrolling.',
+    cta: 'I want to try the beta',
+    chips: ['Android', 'iPhone', 'Free during beta', 'No account'],
+    mockQ: 'How much time do you have?', mockCta: 'Start a 10 min session',
+    mockSaved: 'saved 3 days ago',
+    problemH: 'You save everything. And rarely go back.',
+    problemP: 'YouTube “Watch later”, TikTok and Instagram saves, screenshots, links you send yourself on WhatsApp. Popback doesn’t compete on saving: it helps you finish what you saved.',
+    problemChips: ['Watch later', 'Saved', 'Screenshots', 'WhatsApp links'],
+    howH: 'Short sessions, at the right moment.',
+    steps: [
+      { k: '01 · Session', h: '“I have 10 minutes”', p: 'Pick 5, 10, 15 or 30 minutes and Popback builds a batch that fits.' },
+      { k: '02 · Before you scroll', h: 'Past you left you 3 things (4 min).', p: 'When you open TikTok, Instagram or YouTube, it offers what you saved first. Automatic on Android; on iPhone, with Shortcuts.' },
+      { k: '03 · Triage', h: 'Still worth it?', p: 'Anything unreviewed for 14 days goes to a swipe screen: review now, snooze 7 days or discard.' },
+      { k: '04 · Reminder', h: 'You have 12 minutes of things for today.', p: 'A daily nudge at the time you choose, always in real minutes.' },
+      { k: '05 · Save', h: 'From anywhere.', p: 'From the Share button, your gallery, or by pasting a link or text. It learns how long each thing takes you.' },
+    ],
+    doneK: 'When you finish', doneH: 'All caught up. Future you owes you one.',
+    privK: 'Private by design', privH: 'Your stuff stays on your phone.', privLink: 'Read the privacy policy',
+    priv: [
+      { h: 'No account, no server', p: 'There is no login. Your queue lives in a database on your phone.' },
+      { h: 'Anonymous analytics', p: 'We only count usage anonymously. Never URLs, titles or anything you write.' },
+      { h: 'Permissions explained', p: 'Every permission says what it is for before asking.' },
+    ],
+    betaH: 'Join the beta.', betaP: 'Closed beta from December 3, 2026 on Android and iPhone. Limited spots.', betaCta: 'Save my spot',
+    footer: 'A project by Joseph León', more: 'More projects',
+  },
+}[lang];
+
+const stepColors = ['#FF5B4A', '#3D5AFE', '#B79CFF', '#5EE6B8', '#C6F432'];
+const stepRotate = ['-1deg', '1deg', '-0.5deg', '0.8deg', '-1.2deg'];
+const privacyHref = path('popbackPrivacy', lang);
+
+const appJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Popback',
+  operatingSystem: 'Android, iOS',
+  applicationCategory: 'ProductivityApplication',
+  description: t.description,
+  author: { '@type': 'Person', name: site.name },
+};
+---
+<Base lang={lang} title={t.title} description={t.description} route="popback" theme="light">
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(appJsonLd)} />
+  <div class="pb">
+    <BackStrip lang={lang} route="popback" />
+
+    <section class="bg-[#111018] text-white">
+      <nav aria-label="Popback" class="wrap flex flex-wrap items-center justify-between gap-6 py-5 md:py-6">
+        <a href={path('popback', lang)} class="flex items-center gap-3 text-white no-underline">
+          <img src="/logos/popback-logo.svg" alt="" width="40" height="40" class="size-8 md:size-10" />
+          <span class="pb-h text-[20px] md:text-[24px]" style="letter-spacing:-0.05em">popback</span>
+        </a>
+        <div class="flex flex-wrap items-center gap-5 md:gap-7">
+          <a class="hidden text-[15px] font-semibold text-[#C9C7D6] no-underline hover:text-white sm:inline" href="#como">{t.how}</a>
+          <a class="hidden text-[15px] font-semibold text-[#C9C7D6] no-underline hover:text-white sm:inline" href="#privacidad">{t.privacy}</a>
+          <a class="pb-pill h-11 bg-[#FF5B4A] px-5 text-[13px] text-[#111018] md:h-12 md:text-sm" href="#beta">{t.joinShort}</a>
+        </div>
+      </nav>
+
+      <div class="wrap flex flex-col gap-14 pt-6 pb-16 md:flex-row md:items-center md:gap-16 md:pt-14 md:pb-28">
+        <div class="flex flex-1 flex-col gap-6 md:gap-7">
+          <span class="pb-label text-[#FFD23F]">{t.kicker}</span>
+          <h1 class="pb-h m-0 text-[46px] leading-[0.98] md:text-[84px] md:leading-[0.95]">{t.h1}</h1>
+          <p class="m-0 max-w-[520px] text-[17px] leading-[26px] text-[#C9C7D6] md:text-xl md:leading-[30px]">{t.lead}</p>
+          <div class="flex flex-wrap items-center gap-5">
+            <a class="pb-pill h-[58px] bg-[#FF5B4A] px-7 text-[15px] text-[#111018]" href="#beta">{t.cta} <span aria-hidden="true">→</span></a>
+            <a class="hidden font-semibold text-white md:inline" href="#como">{t.how}</a>
+          </div>
+          <ul class="m-0 flex list-none flex-wrap gap-2.5 p-0">
+            {t.chips.map((c) => <li class="pb-chip bg-[#26242F] text-white">{c}</li>)}
+          </ul>
+        </div>
+
+        <div aria-hidden="true" class="relative h-[400px] w-full max-w-[460px] shrink-0 md:h-[500px]">
+          <div class="absolute top-[30px] left-[30px] h-[150px] w-[78%] rounded-[26px] bg-[#3D5AFE]" style="transform:rotate(7deg)"></div>
+          <div class="absolute top-[48px] left-[10px] h-[150px] w-[78%] rounded-[26px] bg-[#C6F432]" style="transform:rotate(-6deg)"></div>
+          <div class="absolute top-[70px] left-[16px] flex w-[88%] gap-3 rounded-[26px] bg-[#FF5B4A] p-3 text-[#111018]" style="transform:rotate(-1.5deg)">
+            <div class="relative size-[96px] shrink-0 rounded-[18px] bg-[#2A2833] md:size-[112px]">
+              <span class="absolute top-1/2 left-1/2 size-8 -translate-1/2 rounded-full bg-white/90"></span>
+              <span class="absolute bottom-2 left-2 rounded-lg bg-[#111018] px-1.5 py-0.5 text-[11px] font-bold text-white">12:04</span>
+            </div>
+            <div class="flex min-w-0 flex-col gap-1.5">
+              <span class="text-xs font-semibold">YouTube</span>
+              <span class="h-3.5 w-[90%] rounded bg-[#111018]/80"></span>
+              <span class="h-3.5 w-[60%] rounded bg-[#111018]/80"></span>
+              <span class="mt-auto text-xs font-medium"><span class="pb-h text-[15px]">12 min</span> · {t.mockSaved}</span>
+            </div>
+          </div>
+          <div class="absolute top-[240px] left-0 flex w-full flex-col gap-4 rounded-[32px] bg-[#26242F] p-5 md:top-[260px] md:p-6">
+            <span class="pb-h text-lg text-white md:text-[22px]">{t.mockQ}</span>
+            <div class="grid grid-cols-4 gap-2.5">
+              {[5, 10, 15, 30].map((m) => (
+                <div class:list={['flex h-[64px] flex-col items-center justify-center rounded-3xl md:h-[76px]', m === 10 ? 'bg-[#FFD23F] text-[#111018]' : 'bg-[#111018] text-white']}>
+                  <span class="pb-h text-xl md:text-2xl">{m}</span><span class="text-xs">min</span>
+                </div>
+              ))}
+            </div>
+            <span class="pb-pill h-14 justify-center bg-[#FF5B4A] text-[14px] text-[#111018] md:text-[15px]">{t.mockCta} →</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-[#FFD23F] text-[#111018]">
+      <div class="wrap flex flex-col gap-6 py-12 md:flex-row md:items-center md:justify-between md:gap-10 md:py-22">
+        <h2 class="pb-h m-0 flex-1 text-[32px] leading-[1.05] md:text-[52px] md:leading-[1.02]">{t.problemH}</h2>
+        <div class="flex flex-1 flex-col gap-5">
+          <p class="m-0 text-base leading-6 md:text-lg md:leading-7">{t.problemP}</p>
+          <ul class="m-0 flex list-none flex-wrap gap-2.5 p-0">
+            {t.problemChips.map((c) => <li class="pb-chip bg-[#111018] text-white">{c}</li>)}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="como" class="bg-white text-[#111018]">
+      <div class="wrap flex flex-col gap-10 py-12 md:gap-12 md:py-24">
+        <div class="flex max-w-[640px] flex-col gap-3.5">
+          <span class="pb-label text-[#55536A]">{t.how}</span>
+          <h2 class="pb-h m-0 text-[30px] leading-[1.08] md:text-5xl md:leading-[1.05]">{t.howH}</h2>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2 md:gap-5 lg:grid-cols-3">
+          {t.steps.map((s, i) => (
+            <article class="flex flex-col gap-3.5 rounded-[32px] p-6 md:p-8" style={`background:${stepColors[i]};color:${i === 1 ? '#fff' : '#111018'};transform:rotate(${stepRotate[i]})`}>
+              <span class="pb-label">{s.k}</span>
+              <h3 class="pb-h m-0 text-[21px] leading-[1.1] md:text-[26px]">{s.h}</h3>
+              <p class="m-0 text-[15px] leading-[22px] md:text-base md:leading-6">{s.p}</p>
+            </article>
+          ))}
+          <article class="flex flex-col gap-3.5 rounded-[32px] bg-[#F3F2F7] p-6 md:p-8">
+            <span class="pb-label text-[#55536A]">{t.doneK}</span>
+            <h3 class="pb-h m-0 text-[21px] leading-[1.1] md:text-[26px]">{t.doneH}</h3>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="privacidad" class="bg-[#111018] text-white">
+      <div class="wrap flex flex-col gap-10 py-12 md:flex-row md:gap-12 md:py-24">
+        <div class="flex flex-1 flex-col gap-4">
+          <span class="pb-label text-[#5EE6B8]">{t.privK}</span>
+          <h2 class="pb-h m-0 text-[30px] leading-[1.08] md:text-5xl md:leading-[1.05]">{t.privH}</h2>
+          <a href={privacyHref} class="py-2 font-semibold text-white">{t.privLink} →</a>
+        </div>
+        <ul class="m-0 flex flex-1 list-none flex-col gap-3.5 p-0">
+          {t.priv.map((it) => (
+            <li class="flex flex-col gap-1.5 rounded-[26px] bg-[#26242F] p-6">
+              <strong class="text-[17px]">{it.h}</strong>
+              <span class="text-[15px] leading-[22px] text-[#C9C7D6]">{it.p}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section id="beta" class="bg-[#C6F432] text-[#111018]">
+      <div class="wrap flex flex-col items-center gap-6 py-14 text-center md:py-24">
+        <svg viewBox="0 0 100 100" width="120" height="120" aria-hidden="true" class="size-24 md:size-[120px]">
+          <path d="M12 96V52a38 38 0 0 1 76 0v28" fill="none" stroke="#FF5B4A" stroke-width="10" />
+          <path d="M23 96V52a27 27 0 0 1 54 0v28" fill="none" stroke="#FFFFFF" stroke-width="10" />
+          <path d="M34 96V52a16 16 0 0 1 32 0v28" fill="none" stroke="#3D5AFE" stroke-width="10" />
+          <circle cx="77" cy="80" r="16" fill="#111018" />
+        </svg>
+        <h2 class="pb-h m-0 text-4xl leading-none md:text-[56px]">{t.betaH}</h2>
+        <p class="m-0 max-w-[560px] text-base leading-6 md:text-[19px] md:leading-7">{t.betaP}</p>
+        <a class="pb-pill h-[58px] w-full justify-center bg-[#111018] px-7 text-[15px] text-white sm:w-auto" href={beta}>{t.betaCta} <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
+    <footer data-theme="dark" class="border-t-4 border-[#f3eedf] bg-[#0e0b1a]">
+      <div class="wrap flex flex-wrap items-center justify-between gap-4 py-5">
+        <span class="pxlabel text-[#a9a2bf]">© 2026 Popback · {t.footer}</span>
+        <div class="flex flex-wrap gap-5">
+          <a class="pxlabel text-[#f3eedf]" href={privacyHref}>{t.privacy}</a>
+          <a class="pxlabel text-[#f3eedf]" href={`${path('home', lang)}#proyectos`}>{t.more}</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+</Base>
+
+<style is:global>
+  .pb { font-family: "DM Sans Variable", system-ui, sans-serif; background: #fff; color: #111018; }
+  .pb-h { font-family: "Unbounded Variable", sans-serif; font-weight: 800; letter-spacing: -0.04em; }
+  .pb-label { font-family: "DM Sans Variable", sans-serif; font-weight: 700; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+  .pb-pill { display: inline-flex; align-items: center; gap: 10px; border-radius: 999px; font-family: "Unbounded Variable", sans-serif; font-weight: 700; text-decoration: none; }
+  .pb-chip { display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border-radius: 999px; font-size: 13px; font-weight: 600; }
+  .pb a:focus-visible { outline: 3px solid #3D5AFE; outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) { .pb article { transform: none !important; } }
+</style>

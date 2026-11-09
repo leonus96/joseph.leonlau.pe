@@ -1,0 +1,84 @@
+---
+import Base from '../layouts/Base.astro';
+import BackStrip from '../components/BackStrip.astro';
+import PixelButton from '../components/PixelButton.astro';
+import { type Lang, path } from '../i18n';
+import { yoadv } from '../data/site';
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+
+const t = {
+  es: {
+    title: 'yo.adv — Contenido cristiano en Instagram y TikTok',
+    description: 'yo.adv: contenido cristiano en Instagram y TikTok.',
+    lead: 'Contenido cristiano en Instagram y TikTok.',
+    latest: 'Últimos videos', footer: 'Un proyecto de Joseph León', more: 'Más proyectos',
+    empty: 'Pronto, los videos más recientes aquí.',
+  },
+  en: {
+    title: 'yo.adv — Christian content on Instagram and TikTok',
+    description: 'yo.adv: Christian content on Instagram and TikTok.',
+    lead: 'Christian content on Instagram and TikTok.',
+    latest: 'Latest videos', footer: 'A project by Joseph León', more: 'More projects',
+    empty: 'The latest videos will show up here soon.',
+  },
+}[lang];
+---
+<Base lang={lang} title={t.title} description={t.description} route="yoadv" theme="light">
+  <BackStrip lang={lang} route="yoadv" tone="light" />
+
+  <section class="relative overflow-hidden" aria-labelledby="yoadv-h">
+    <div aria-hidden="true" class="absolute inset-0 flex flex-col">
+      <div class="flex-[3] bg-[#ffe7c2]"></div>
+      <div class="flex-[2] bg-[#ffd3a1]"></div>
+      <div class="flex-[2] bg-[#ffbe8a]"></div>
+      <div class="flex-[2] bg-[#f9a37e]"></div>
+    </div>
+    <svg aria-hidden="true" viewBox="0 0 160 80" shape-rendering="crispEdges" class="absolute right-6 bottom-28 h-[60px] w-[120px] md:right-[18%] md:bottom-[200px] md:h-[120px] md:w-[240px]">
+      <polygon fill="#ffc43d" points="48,80 48,72 40,72 40,64 32,64 32,48 40,48 40,32 48,32 48,24 56,24 56,16 72,16 72,8 88,8 88,16 104,16 104,24 112,24 112,32 120,32 120,48 128,48 128,64 120,64 120,72 112,72 112,80" />
+    </svg>
+    <svg aria-hidden="true" viewBox="0 0 1440 240" preserveAspectRatio="none" shape-rendering="crispEdges" class="absolute bottom-0 left-0 h-[140px] w-full md:h-[240px]">
+      <polygon fill="#7fd8c8" points="0,240 0,120 96,120 96,104 208,104 208,88 336,88 336,104 448,104 448,128 560,128 560,112 704,112 704,96 816,96 816,80 960,80 960,96 1072,96 1072,112 1200,112 1200,96 1328,96 1328,112 1440,112 1440,240" />
+      <rect x="880" y="40" width="8" height="40" fill="#1b1626" />
+      <rect x="868" y="52" width="32" height="8" fill="#1b1626" />
+      <polygon fill="#2ec4b6" points="0,240 0,168 128,168 128,152 272,152 272,160 400,160 400,144 528,144 528,160 656,160 656,176 800,176 800,160 944,160 944,144 1088,144 1088,160 1232,160 1232,152 1360,152 1360,168 1440,168 1440,240" />
+      <rect x="0" y="208" width="1440" height="32" fill="#1f9e8f" />
+    </svg>
+    <div class="wrap relative z-[1] flex flex-col gap-5 pt-12 pb-[180px] md:gap-6 md:pt-24 md:pb-[280px]">
+      <h1 id="yoadv-h" class="m-0 font-display text-[72px] leading-[68px] font-bold text-[#1b1626] md:text-[120px] md:leading-[108px]">yo.adv</h1>
+      <p class="m-0 text-lg leading-[26px] text-[#1b1626] md:text-2xl md:leading-[34px]">{t.lead}</p>
+      <div class="flex flex-wrap gap-2 md:gap-3">
+        <PixelButton variant="primary" href={yoadv.tiktok}>TikTok</PixelButton>
+        <PixelButton href={yoadv.instagram}>Instagram</PixelButton>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap flex flex-col gap-6 py-12 md:gap-10 md:py-24" aria-labelledby="latest-h">
+    <div class="flex flex-wrap items-baseline justify-between gap-4">
+      <h2 id="latest-h" class="h-section">{t.latest}</h2>
+      <a href={yoadv.tiktok} target="_blank" rel="noopener" class="font-mono text-sm text-accent-ink">{yoadv.handle} ↗</a>
+    </div>
+    {yoadv.videos.length > 0 ? (
+      <ul class="m-0 grid list-none grid-cols-2 gap-5 p-0 md:grid-cols-4 md:gap-8">
+        {yoadv.videos.map((v) => (
+          <li>
+            <a class="jp-frame jp-frame--shadow flex aspect-[9/16] items-end bg-sunken p-3 no-underline md:p-4" href={v.url} target="_blank" rel="noopener">
+              <span class="flex flex-col gap-1"><span class="text-[15px] font-semibold">{v.title}</span><span class="font-mono text-xs text-muted">{v.platform}</span></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="m-0 text-muted">{t.empty}</p>
+    )}
+  </section>
+
+  <footer class="border-t-4 border-ink">
+    <div class="wrap flex flex-wrap justify-between gap-4 py-5 text-sm text-muted">
+      <span>© 2026 yo.adv · {t.footer}</span>
+      <a href={`${path('home', lang)}#proyectos`} class="text-ink">{t.more}</a>
+    </div>
+  </footer>
+</Base>

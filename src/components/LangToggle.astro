@@ -1,0 +1,10 @@
+---
+import { type Lang, type RouteKey, routes, languages } from '../i18n';
+interface Props { lang: Lang; route: RouteKey; }
+const { lang, route } = Astro.props;
+---
+<nav class="jp-toggle" aria-label={lang === 'es' ? 'Idioma' : 'Language'}>
+  {(Object.keys(languages) as Lang[]).map((l) => (
+    <a href={routes[route][l]} hreflang={l} lang={l} aria-current={l === lang ? 'true' : undefined} title={languages[l]}>{l.toUpperCase()}</a>
+  ))}
+</nav>

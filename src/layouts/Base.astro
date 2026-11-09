@@ -1,0 +1,51 @@
+---
+import '../styles/global.css';
+import { type Lang, type RouteKey, routes } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  route?: RouteKey;
+  image?: string;
+  /** Force a theme for the whole page (e.g. a landing with its own brand). */
+  theme?: 'light' | 'dark';
+  noindex?: boolean;
+}
+
+const { lang, title, description, route, image = '/og.png', theme, noindex = false } = Astro.props;
+const site = Astro.site ?? new URL('http://localhost:4321');
+const canonical = new URL(route ? routes[route][lang] : Astro.url.pathname, site);
+const ogImage = new URL(image, site);
+---
+<!doctype html>
+<html lang={lang} data-theme={theme}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {route && (
+      <>
+        <link rel="alternate" hreflang="es" href={new URL(routes[route].es, site)} />
+        <link rel="alternate" hreflang="en" href={new URL(routes[route].en, site)} />
+        <link rel="alternate" hreflang="x-default" href={new URL(routes[route].es, site)} />
+      </>
+    )}
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content={lang === 'es' ? 'es_PE' : 'en_US'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <slot name="head" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

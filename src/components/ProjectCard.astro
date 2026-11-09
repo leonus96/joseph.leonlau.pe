@@ -1,0 +1,33 @@
+---
+import '@fontsource-variable/unbounded';
+import Badge from './Badge.astro';
+import type { Project } from '../data/projects';
+import { type Lang, path } from '../i18n';
+interface Props { project: Project; lang: Lang; }
+const { project: p, lang } = Astro.props;
+const href = typeof p.href === 'string' ? p.href : path(p.href.route, lang);
+const external = typeof p.href === 'string';
+---
+<a class="jp-frame jp-frame--shadow jp-card" href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener' : undefined}>
+  <div class="jp-card__tile" style={`background:${p.tile}`}>
+    {p.logo?.kind === 'img' && <img src={p.logo.src} alt="" width={p.logo.width} height={p.logo.height} class="h-10 w-auto md:h-12" />}
+    {p.logo?.kind === 'popback' && (
+      <span class="flex items-center gap-3">
+        <img src={p.logo.src} alt="" width="56" height="56" class="size-11 md:size-14" />
+        <span style="font-family:'Unbounded Variable',sans-serif;font-weight:800;letter-spacing:-0.05em;color:#fff" class="text-[28px] md:text-[34px]">popback</span>
+      </span>
+    )}
+    {!p.logo && <span class="font-display text-[44px] font-bold leading-none text-[#0e0b1a] md:text-[56px]" aria-hidden="true">{p.name}</span>}
+  </div>
+  <div class="jp-card__body">
+    <div class="flex items-center justify-between gap-3">
+      <h3 class="jp-card__name m-0">{p.name}</h3>
+      <Badge tone={p.status}>{p.statusLabel[lang]}</Badge>
+    </div>
+    <p class="m-0 text-[17px] leading-[26px]">{p.description[lang]}</p>
+    <div class="mt-auto flex flex-wrap items-center justify-between gap-2 pt-2">
+      <span class="text-sm font-medium text-muted">{p.meta[lang]}</span>
+      <span class="jp-card__link">{p.linkLabel}</span>
+    </div>
+  </div>
+</a>

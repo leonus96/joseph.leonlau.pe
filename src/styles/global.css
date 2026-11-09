@@ -1,0 +1,154 @@
+@import "tailwindcss";
+@import "@fontsource-variable/pixelify-sans";
+@import "@fontsource-variable/space-grotesk";
+@import "@fontsource-variable/jetbrains-mono";
+@import "@fontsource/silkscreen/400.css";
+
+/* ---------- Tokens (design system "Joseph León") ---------- */
+:root {
+  color-scheme: light;
+  --bg: #f4efe3; --bg-raised: #fffbf2; --bg-sunken: #e6ddc8;
+  --ink: #1b1626; --ink-muted: #554d66; --frame: var(--ink); --line: #d6cbb3;
+  --accent: #ffc43d; --accent-ink: #7a4f00; --live: #3ee07a; --info: #4cc9f0; --on-accent: #0e0b1a;
+  --focus: #9a4508;
+  --tile-obsiva: #14171a; --tile-ginesis: #d6246e; --tile-popback: #111018; --tile-yoadv: #2ec4b6;
+  --shadow-pixel-sm: 4px 4px 0 0 #1b1626; --shadow-pixel: 8px 8px 0 0 #1b1626; --shadow-pixel-lg: 12px 12px 0 0 #1b1626;
+  --px: 4px;
+  --dur-tick: 120ms;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #0e0b1a; --bg-raised: #1a1530; --bg-sunken: #07050f;
+    --ink: #f3eedf; --ink-muted: #a9a2bf; --line: #3a3260;
+    --accent-ink: #ffc43d; --focus: #ffc43d;
+    --shadow-pixel-sm: 4px 4px 0 0 #3a3260; --shadow-pixel: 8px 8px 0 0 #3a3260; --shadow-pixel-lg: 12px 12px 0 0 #ffc43d;
+  }
+}
+/* Sections that must stay light regardless of system theme (yo.adv dawn). */
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f4efe3; --bg-raised: #fffbf2; --bg-sunken: #e6ddc8;
+  --ink: #1b1626; --ink-muted: #554d66; --line: #d6cbb3;
+  --accent-ink: #7a4f00; --focus: #9a4508;
+  --shadow-pixel-sm: 4px 4px 0 0 #1b1626; --shadow-pixel: 8px 8px 0 0 #1b1626; --shadow-pixel-lg: 12px 12px 0 0 #1b1626;
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0e0b1a; --bg-raised: #1a1530; --bg-sunken: #07050f;
+  --ink: #f3eedf; --ink-muted: #a9a2bf; --line: #3a3260;
+  --accent-ink: #ffc43d; --focus: #ffc43d;
+  --shadow-pixel-sm: 4px 4px 0 0 #3a3260; --shadow-pixel: 8px 8px 0 0 #3a3260; --shadow-pixel-lg: 12px 12px 0 0 #ffc43d;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-raised: var(--bg-raised);
+  --color-sunken: var(--bg-sunken);
+  --color-ink: var(--ink);
+  --color-muted: var(--ink-muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+}
+
+@theme static {
+  --font-display: "Pixelify Sans Variable", ui-monospace, monospace;
+  --font-label: "Silkscreen", ui-monospace, monospace;
+  --font-sans: "Space Grotesk Variable", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+}
+
+@layer base {
+  html { background: var(--bg); color: var(--ink); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+  body { margin: 0; min-height: 100dvh; }
+  a { color: inherit; }
+  :focus-visible { outline: var(--px) solid var(--focus); outline-offset: calc(var(--px) * 2); }
+  ::selection { background: var(--accent); color: var(--on-accent); }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+}
+
+@layer components {
+  .wrap { max-width: 1200px; margin-inline: auto; padding-inline: 16px; }
+  @media (min-width: 768px) { .wrap { padding-inline: 32px; } }
+
+  .h-name { font-family: var(--font-display); font-weight: 700; font-size: clamp(64px, 11vw, 120px); line-height: .9; margin: 0; }
+  .h-section { font-family: var(--font-display); font-weight: 700; font-size: clamp(32px, 4vw, 40px); line-height: 1.1; margin: 0; }
+
+  /* Pixel frame: 4px border with stepped corners */
+  .jp-frame {
+    position: relative; margin: var(--px); background: var(--bg-raised);
+    box-shadow: 0 calc(var(--px) * -1) 0 0 var(--frame), 0 var(--px) 0 0 var(--frame), calc(var(--px) * -1) 0 0 0 var(--frame), var(--px) 0 0 0 var(--frame);
+  }
+  .jp-frame--shadow {
+    box-shadow: 0 calc(var(--px) * -1) 0 0 var(--frame), 0 var(--px) 0 0 var(--frame), calc(var(--px) * -1) 0 0 0 var(--frame), var(--px) 0 0 0 var(--frame), var(--shadow-pixel);
+  }
+  .pixelated { image-rendering: pixelated; }
+
+  /* PixelButton */
+  .jp-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    margin: var(--px); padding: 12px 24px; min-height: 44px; box-sizing: border-box;
+    border: 0; cursor: pointer; text-decoration: none;
+    font-family: var(--font-label); font-size: 14px; line-height: 16px; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--ink); background: var(--bg-raised);
+    box-shadow: 0 calc(var(--px) * -1) 0 0 var(--frame), 0 var(--px) 0 0 var(--frame), calc(var(--px) * -1) 0 0 0 var(--frame), var(--px) 0 0 0 var(--frame), var(--shadow-pixel-sm);
+    transition: transform var(--dur-tick) steps(2), box-shadow var(--dur-tick) steps(2);
+  }
+  .jp-btn--primary { background: var(--accent); color: var(--on-accent); }
+  .jp-btn--ghost { background: transparent; box-shadow: none; padding-inline: 8px; }
+  .jp-btn--ghost:hover { color: var(--accent-ink); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 2px; }
+  .jp-btn:not(.jp-btn--ghost):hover { transform: translate(-2px, -2px); }
+  .jp-btn:not(.jp-btn--ghost):active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 calc(var(--px) * -1) 0 0 var(--frame), 0 var(--px) 0 0 var(--frame), calc(var(--px) * -1) 0 0 0 var(--frame), var(--px) 0 0 0 var(--frame);
+  }
+
+  /* Badge */
+  .jp-badge {
+    display: inline-flex; align-items: center; gap: 6px; margin: 2px; padding: 4px 8px; white-space: nowrap;
+    font-family: var(--font-label); font-size: 10px; line-height: 12px; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--on-accent); background: var(--info);
+    box-shadow: 0 -2px 0 0 var(--frame), 0 2px 0 0 var(--frame), -2px 0 0 0 var(--frame), 2px 0 0 0 var(--frame);
+  }
+  .jp-badge--live { background: var(--live); }
+  .jp-badge--tag { background: var(--bg-sunken); color: var(--ink); font-family: var(--font-mono); font-size: 13px; letter-spacing: 0; text-transform: none; }
+  .jp-badge__dot { width: 6px; height: 6px; border-radius: 9999px; background: var(--on-accent); }
+
+  /* LangToggle (links) */
+  .jp-toggle { display: inline-flex; margin: var(--px); background: var(--bg-raised);
+    box-shadow: 0 calc(var(--px) * -1) 0 0 var(--frame), 0 var(--px) 0 0 var(--frame), calc(var(--px) * -1) 0 0 0 var(--frame), var(--px) 0 0 0 var(--frame); }
+  .jp-toggle a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 12px; text-decoration: none;
+    font-family: var(--font-label); font-size: 12px; letter-spacing: .06em; color: var(--ink-muted); }
+  .jp-toggle a[aria-current="true"] { background: var(--ink); color: var(--bg); }
+  .jp-toggle a:not([aria-current="true"]):hover { color: var(--ink); }
+
+  /* ProjectCard */
+  .jp-card { display: flex; flex-direction: column; text-decoration: none; color: var(--ink);
+    transition: transform var(--dur-tick) steps(2), box-shadow var(--dur-tick) steps(2); }
+  .jp-card:hover { transform: translate(-4px, -4px);
+    box-shadow: 0 calc(var(--px) * -1) 0 0 var(--frame), 0 var(--px) 0 0 var(--frame), calc(var(--px) * -1) 0 0 0 var(--frame), var(--px) 0 0 0 var(--frame), var(--shadow-pixel-lg); }
+  .jp-card__tile { position: relative; height: 160px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  @media (min-width: 768px) { .jp-card__tile { height: 200px; } }
+  .jp-card__tile::after {
+    content: ""; position: absolute; inset: auto 0 0 0; height: 16px;
+    background-image: linear-gradient(90deg, var(--bg-raised) 50%, transparent 50%), linear-gradient(90deg, transparent 50%, var(--bg-raised) 50%);
+    background-size: 16px 8px; background-position: 0 0, 0 8px; background-repeat: repeat-x;
+  }
+  .jp-card__body { display: flex; flex-direction: column; gap: 12px; padding: 24px; flex: 1; }
+  .jp-card__name { font-family: var(--font-display); font-weight: 600; font-size: 28px; line-height: 32px; }
+  .jp-card__link { font-family: var(--font-mono); font-size: 14px; color: var(--accent-ink); }
+  .jp-card:hover .jp-card__link { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 2px; }
+
+  .dither { height: 16px; opacity: .12;
+    background-image: linear-gradient(90deg, var(--ink) 50%, transparent 50%), linear-gradient(90deg, transparent 50%, var(--ink) 50%);
+    background-size: 16px 8px; background-position: 0 0, 0 8px; background-repeat: repeat-x; }
+
+  .pxlabel { font-family: var(--font-label); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; text-decoration: none; }
+  .pxlabel:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .jp-btn, .jp-card { transition: none; }
+    .jp-btn:hover, .jp-card:hover, .jp-btn:active { transform: none; }
+  }
+}

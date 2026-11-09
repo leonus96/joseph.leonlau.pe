@@ -1,20 +1,27 @@
 {
-  "name": "portfolio",
+  "name": "leonlau",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
     "dev": "astro dev",
-    "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/mdx": "^2.3.1",
-    "@astrojs/rss": "^4.0.5",
-    "@astrojs/sitemap": "^3.1.4",
-    "@astrojs/tailwind": "^5.1.0",
-    "astro": "^4.7.0",
-    "tailwindcss": "^3.4.3"
+    "@astrojs/sitemap": "3.4.2",
+    "@fontsource-variable/dm-sans": "5.3.0",
+    "@fontsource-variable/jetbrains-mono": "5.3.0",
+    "@fontsource-variable/pixelify-sans": "5.3.0",
+    "@fontsource-variable/space-grotesk": "5.3.0",
+    "@fontsource-variable/unbounded": "5.3.0",
+    "@fontsource/silkscreen": "5.3.0",
+    "@tailwindcss/vite": "4.1.18",
+    "astro": "5.18.2",
+    "tailwindcss": "4.1.18"
+  },
+  "engines": {
+    "node": "24.x"
   }
 }

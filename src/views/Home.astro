@@ -1,0 +1,103 @@
+---
+import Base from '../layouts/Base.astro';
+import LangToggle from '../components/LangToggle.astro';
+import PixelButton from '../components/PixelButton.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import Badge from '../components/Badge.astro';
+import { projects } from '../data/projects';
+import { site } from '../data/site';
+import type { Lang } from '../i18n';
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+
+const t = {
+  es: {
+    title: 'Joseph León — Desarrollador de software',
+    description: 'Desarrollador de software. Apps móviles y web: Obsiva, Ginesis, Popback y yo.adv.',
+    lead: 'Desarrollador de software. Apps móviles y web, de la idea a producción.',
+    write: 'Escríbeme',
+    projects: 'Proyectos',
+    contact: 'Contacto',
+    nav: 'Principal',
+  },
+  en: {
+    title: 'Joseph León — Software developer',
+    description: 'Software developer. Mobile and web apps: Obsiva, Ginesis, Popback and yo.adv.',
+    lead: 'Software developer. Mobile and web apps, from idea to production.',
+    write: 'Email me',
+    projects: 'Projects',
+    contact: 'Contact',
+    nav: 'Main',
+  },
+}[lang];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  jobTitle: lang === 'es' ? 'Desarrollador de software' : 'Software developer',
+  image: new URL('/joseph-pixel.png', Astro.site ?? 'http://localhost:4321').toString(),
+  email: `mailto:${site.email}`,
+  sameAs: Object.values(site.links).filter(Boolean),
+};
+---
+<Base lang={lang} title={t.title} description={t.description} route="home">
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <header class="wrap flex flex-wrap items-center justify-between gap-4 py-4 md:py-6">
+    <a href="#top" class="font-display text-[20px] font-bold no-underline md:text-[22px]">Joseph León</a>
+    <nav aria-label={t.nav} class="flex flex-wrap items-center gap-4 md:gap-6">
+      <a class="hidden py-2 text-[15px] font-medium underline-offset-[6px] hover:underline sm:inline" href="#proyectos">{t.projects}</a>
+      <a class="hidden py-2 text-[15px] font-medium underline-offset-[6px] hover:underline sm:inline" href="#contacto">{t.contact}</a>
+      <LangToggle lang={lang} route="home" />
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="wrap flex flex-col-reverse gap-10 pt-6 pb-14 md:flex-row md:items-center md:justify-between md:gap-16 md:pt-14 md:pb-24">
+      <div class="flex flex-1 flex-col gap-6 md:gap-7">
+        <h1 class="h-name">Joseph<br />León</h1>
+        <p class="m-0 max-w-[460px] text-[19px] leading-7 md:text-2xl md:leading-[34px]">{t.lead}</p>
+        <div class="flex flex-wrap items-center gap-2 md:gap-3">
+          <PixelButton variant="primary" href={`mailto:${site.email}`}>{t.write}</PixelButton>
+          <PixelButton href={site.links.github}>GitHub</PixelButton>
+          <PixelButton href={site.links.linkedin}>LinkedIn</PixelButton>
+        </div>
+      </div>
+      <div class="jp-frame jp-frame--shadow w-[216px] shrink-0 leading-none md:w-[360px]">
+        <img src="/joseph-pixel.png" alt="Joseph León" width="360" height="480" class="pixelated block h-auto w-full" fetchpriority="high" />
+      </div>
+    </section>
+
+    <div class="dither" aria-hidden="true"></div>
+
+    <section id="proyectos" class="wrap flex flex-col gap-7 pt-12 pb-6 md:gap-10 md:pt-24 md:pb-12" aria-labelledby="proyectos-h">
+      <h2 id="proyectos-h" class="h-section">{t.projects}</h2>
+      <div class="grid gap-7 md:grid-cols-2 md:gap-10">
+        {projects.map((p) => <ProjectCard project={p} lang={lang} />)}
+      </div>
+    </section>
+
+    <section class="wrap flex flex-col gap-4 pt-10 pb-4 md:flex-row md:items-baseline md:gap-12 md:pt-16 md:pb-12" aria-labelledby="stack-h">
+      <h2 id="stack-h" class="h-section md:w-[220px] md:shrink-0">Stack</h2>
+      <ul class="m-0 flex list-none flex-wrap gap-2 p-0 md:gap-2.5">
+        {site.stack.map((s) => <li><Badge>{s}</Badge></li>)}
+      </ul>
+    </section>
+
+    <section id="contacto" class="wrap flex flex-col gap-4 pt-10 pb-14 md:flex-row md:items-baseline md:gap-12 md:pt-16 md:pb-24" aria-labelledby="contacto-h">
+      <h2 id="contacto-h" class="h-section md:w-[220px] md:shrink-0">{t.contact}</h2>
+      <div class="flex flex-col gap-4">
+        <a href={`mailto:${site.email}`} class="break-all font-mono text-lg leading-[26px] md:text-[28px] md:leading-9">{site.email}</a>
+        <div class="-ml-3 flex flex-wrap gap-1">
+          <PixelButton variant="ghost" href={site.links.github}>GitHub</PixelButton>
+          <PixelButton variant="ghost" href={site.links.linkedin}>LinkedIn</PixelButton>        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t-4 border-ink">
+    <div class="wrap py-5 text-sm text-muted">© {new Date().getFullYear()} Joseph León</div>
+  </footer>
+</Base>

@@ -1,11 +1,21 @@
-import {defineConfig} from 'astro/config';
-import mdx from '@astrojs/mdx';
+// @ts-check
+import { defineConfig } from 'astro/config';
+import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
-import tailwind from "@astrojs/tailwind";
+// Final domain (canonical, hreflang, OG, sitemap). Override with SITE_URL if needed.
+const site = process.env.SITE_URL ?? 'https://joseph.leonlau.pe';
 
-// https://astro.build/config
 export default defineConfig({
-    site: 'https://example.com',
-    integrations: [mdx(), sitemap(), tailwind()],
+  site,
+  trailingSlash: 'ignore',
+  i18n: {
+    defaultLocale: 'es',
+    locales: ['es', 'en'],
+    routing: { prefixDefaultLocale: false },
+  },
+  integrations: [
+    sitemap({ i18n: { defaultLocale: 'es', locales: { es: 'es', en: 'en' } } }),
+  ],
+  vite: { plugins: [tailwindcss()] },
 });

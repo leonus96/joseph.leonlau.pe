@@ -1,0 +1,62 @@
+---
+import Base from '../layouts/Base.astro';
+import BackStrip from '../components/BackStrip.astro';
+import { type Lang, path } from '../i18n';
+import { site } from '../data/site';
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const updated = lang === 'es' ? '9 de noviembre de 2026' : 'November 9, 2026';
+
+// DRAFT — review before publishing to the stores.
+const t = {
+  es: {
+    title: 'Política de privacidad — Popback',
+    description: 'Cómo Popback trata tus datos: todo vive en tu teléfono, sin cuenta ni servidor.',
+    h1: 'Política de privacidad',
+    updated: 'Última actualización',
+    back: 'Volver a Popback',
+    sections: [
+      { h: 'Resumen', p: ['Popback no tiene cuentas ni servidor propio. Lo que guardas (links, textos, capturas y tus notas) se queda en una base de datos dentro de tu teléfono. No lo vemos ni lo recibimos.'] },
+      { h: 'Qué guarda la app en tu teléfono', p: ['Los elementos que guardas, su tipo, la fecha en que los guardaste, cuánto tiempo estimado toman y lo que haces con ellos (revisado, pospuesto, descartado). También tus ajustes: hora del recordatorio, apps del interceptor y días antes del triaje.', 'Para mostrar título y miniatura de un link, la app consulta esa página directamente desde tu teléfono. Puedes desactivarlo en ajustes.'] },
+      { h: 'Analítica anónima', p: ['Para saber si la app funciona, enviamos eventos de uso anónimos a PostHog con un identificador aleatorio por instalación: por ejemplo, que se guardó un elemento de tipo video, que se inició una sesión de 10 minutos o que se activó el interceptor.', 'Nunca enviamos URLs, títulos, textos que escribes ni contenido que guardas.'] },
+      { h: 'Permisos', p: ['Notificaciones: para el recordatorio diario. Opcional.', 'Android, acceso a uso de apps y mostrar sobre otras apps: para ofrecerte lo guardado al abrir TikTok, Instagram o YouTube. Solo se revisa qué app está al frente; no se lee nada de su contenido. Opcional.', 'iPhone, Atajos: la automatización la creas tú en la app Atajos y solo abre Popback.', 'Fotos: solo las imágenes que tú eliges guardar.'] },
+      { h: 'Borrar tus datos', p: ['Como todo vive en tu teléfono, al desinstalar Popback se borra todo. También puedes eliminar elementos uno por uno dentro de la app.'] },
+      { h: 'Menores', p: ['Popback no está dirigida a menores de 13 años.'] },
+      { h: 'Cambios', p: ['Si esta política cambia, actualizaremos esta página y la fecha de arriba.'] },
+      { h: 'Contacto', p: [`Escríbenos a ${site.email}.`] },
+    ],
+  },
+  en: {
+    title: 'Privacy policy — Popback',
+    description: 'How Popback handles your data: everything lives on your phone, no account, no server.',
+    h1: 'Privacy policy',
+    updated: 'Last updated',
+    back: 'Back to Popback',
+    sections: [
+      { h: 'Summary', p: ['Popback has no accounts and no server of its own. What you save (links, text, screenshots and your notes) stays in a database on your phone. We don’t see it or receive it.'] },
+      { h: 'What the app stores on your phone', p: ['The items you save, their type, when you saved them, their estimated time and what you do with them (reviewed, snoozed, discarded). Also your settings: reminder time, interceptor apps and days before triage.', 'To show a link’s title and thumbnail, the app requests that page directly from your phone. You can turn this off in settings.'] },
+      { h: 'Anonymous analytics', p: ['To know whether the app works, we send anonymous usage events to PostHog with a random per-install identifier: for example, that a video item was saved, that a 10-minute session started or that the interceptor was turned on.', 'We never send URLs, titles, text you write or the content you save.'] },
+      { h: 'Permissions', p: ['Notifications: for the daily reminder. Optional.', 'Android, usage access and display over other apps: to offer your saved items when you open TikTok, Instagram or YouTube. Only the app in the foreground is checked; nothing inside it is read. Optional.', 'iPhone, Shortcuts: you create the automation in the Shortcuts app and it only opens Popback.', 'Photos: only the images you choose to save.'] },
+      { h: 'Deleting your data', p: ['Since everything lives on your phone, uninstalling Popback deletes it all. You can also delete items one by one in the app.'] },
+      { h: 'Children', p: ['Popback is not directed at children under 13.'] },
+      { h: 'Changes', p: ['If this policy changes, we will update this page and the date above.'] },
+      { h: 'Contact', p: [`Write to ${site.email}.`] },
+    ],
+  },
+}[lang];
+---
+<Base lang={lang} title={t.title} description={t.description} route="popbackPrivacy">
+  <BackStrip lang={lang} route="popbackPrivacy" />
+  <main class="wrap max-w-[760px] py-12 md:py-20">
+    <a href={path('popback', lang)} class="text-accent-ink">← {t.back}</a>
+    <h1 class="h-section mt-6">{t.h1}</h1>
+    <p class="mt-3 font-mono text-sm text-muted">{t.updated}: {updated}</p>
+    {t.sections.map((s) => (
+      <section class="mt-10">
+        <h2 class="m-0 font-display text-2xl font-semibold">{s.h}</h2>
+        {s.p.map((p) => <p class="mt-3 mb-0 text-[17px] leading-7">{p}</p>)}
+      </section>
+    ))}
+  </main>
+</Base>

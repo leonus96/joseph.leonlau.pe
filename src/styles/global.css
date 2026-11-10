@@ -128,14 +128,18 @@
     transition: transform var(--dur-tick) steps(2), box-shadow var(--dur-tick) steps(2); }
   .jp-card:hover { transform: translate(-4px, -4px);
     box-shadow: 0 calc(var(--px) * -1) 0 0 var(--frame), 0 var(--px) 0 0 var(--frame), calc(var(--px) * -1) 0 0 0 var(--frame), var(--px) 0 0 0 var(--frame), var(--shadow-pixel-lg); }
-  .jp-card__tile { position: relative; height: 160px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-  @media (min-width: 768px) { .jp-card__tile { height: 200px; } }
-  .jp-card__tile::after {
-    content: ""; position: absolute; inset: auto 0 0 0; height: 16px;
+  /* cassette shape: grip ridges on top, the project's colour as an inset label */
+  .jp-card__grip { display: flex; justify-content: center; gap: 6px; padding: 10px 0 8px; }
+  .jp-card__grip i { display: block; width: 6px; height: 12px; background: var(--line); }
+  .jp-card__tile { position: relative; margin: 0 16px; height: 128px; display: flex; align-items: center; justify-content: center; overflow: hidden;
+    box-shadow: 0 -2px 0 0 var(--frame), 0 2px 0 0 var(--frame), -2px 0 0 0 var(--frame), 2px 0 0 0 var(--frame); }
+  @media (min-width: 768px) { .jp-card__tile { height: 152px; } }
+  .jp-card__tile::before {
+    content: ""; position: absolute; inset: 0 0 auto 0; height: 16px; opacity: .35;
     background-image: linear-gradient(90deg, var(--bg-raised) 50%, transparent 50%), linear-gradient(90deg, transparent 50%, var(--bg-raised) 50%);
     background-size: 16px 8px; background-position: 0 0, 0 8px; background-repeat: repeat-x;
   }
-  .jp-card__body { display: flex; flex-direction: column; gap: 12px; padding: 24px; flex: 1; }
+  .jp-card__body { display: flex; flex-direction: column; gap: 10px; padding: 20px 24px 24px; flex: 1; }
   .jp-card__name { font-family: var(--font-display); font-weight: 600; font-size: 28px; line-height: 32px; }
   .jp-card__link { font-family: var(--font-mono); font-size: 14px; color: var(--accent-ink); }
   .jp-card:hover .jp-card__link { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 2px; }

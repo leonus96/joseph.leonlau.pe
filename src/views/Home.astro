@@ -62,22 +62,22 @@ const jsonLd = {
   </header>
 
   <main id="top">
-    <section class="wrap flex flex-col-reverse gap-8 pt-4 pb-14 md:flex-row md:items-center md:justify-between md:gap-12 md:pt-8 md:pb-16">
-      <div class="flex flex-1 flex-col gap-6 md:gap-7">
-        <h1 class="h-name">Joseph<br />León</h1>
-        <p class="m-0 max-w-[460px] text-[19px] leading-7 md:text-2xl md:leading-[34px]">{t.lead}</p>
-        <div class="flex flex-wrap items-center gap-2 md:gap-3">
-          <PixelButton variant="primary" href={`mailto:${site.email}`}>{t.write}</PixelButton>
-          <PixelButton href={site.links.github}>GitHub</PixelButton>
-          <PixelButton href={site.links.linkedin}>LinkedIn</PixelButton>
-        </div>
+    <section class="wrap hero pt-2 pb-10 md:pt-2 md:pb-8">
+      <h1 class="h-name hero__name">Joseph<br />León</h1>
+      <p class="hero__lead m-0 max-w-[460px] text-[18px] leading-7 md:text-2xl md:leading-[34px]">{t.lead}</p>
+      <div class="hero__cta flex flex-wrap items-center gap-2 md:gap-3">
+        <PixelButton variant="primary" href={`mailto:${site.email}`}>{t.write}</PixelButton>
+        <PixelButton href={site.links.github}>GitHub</PixelButton>
+        <PixelButton href={site.links.linkedin}>LinkedIn</PixelButton>
       </div>
-      <PortraitSwap art="/joseph-pixel.png" artDark="/joseph-pixel-dark.png" photo="/joseph-photo.webp" label={t.portraitLabel} hintHover={t.hintHover} hintTouch={t.hintTouch} />
+      <div class="hero__portrait">
+        <PortraitSwap art="/joseph-pixel.png" artDark="/joseph-pixel-dark.png" photo="/joseph-photo.webp" label={t.portraitLabel} hintHover={t.hintHover} hintTouch={t.hintTouch} />
+      </div>
     </section>
 
     <div class="dither" aria-hidden="true"></div>
 
-    <section id="proyectos" class="wrap flex flex-col gap-7 pt-12 pb-6 md:gap-10 md:pt-24 md:pb-12" aria-labelledby="proyectos-h">
+    <section id="proyectos" class="wrap flex flex-col gap-6 pt-8 pb-6 md:gap-8 md:pt-10 md:pb-12" aria-labelledby="proyectos-h">
       <h2 id="proyectos-h" class="h-section">{t.projects}</h2>
       <div class="grid gap-7 md:grid-cols-2 md:gap-10">
         {projects.map((p) => <ProjectCard project={p} lang={lang} />)}
@@ -106,3 +106,18 @@ const jsonLd = {
     <div class="wrap py-5 text-sm text-muted">© {new Date().getFullYear()} Joseph León</div>
   </footer>
 </Base>
+
+<style>
+  /* mobile: name and portrait side by side, then lead and buttons; desktop: portrait spans the right column */
+  .hero { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "name portrait" "lead lead" "cta cta";
+    column-gap: 12px; row-gap: 20px; align-items: center; }
+  .hero__name { grid-area: name; font-size: clamp(44px, 14.5vw, 64px); }
+  .hero__lead { grid-area: lead; }
+  .hero__cta { grid-area: cta; }
+  .hero__portrait { grid-area: portrait; justify-self: end; }
+  @media (min-width: 768px) {
+    .hero { grid-template-areas: "name portrait" "lead portrait" "cta portrait"; grid-template-rows: auto auto 1fr;
+      column-gap: 48px; row-gap: 24px; align-items: start; }
+    .hero__name { align-self: end; margin-top: 8px; font-size: clamp(64px, 11vw, 120px); }
+  }
+</style>

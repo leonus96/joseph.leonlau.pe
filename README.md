@@ -27,7 +27,7 @@ SITE_URL=https://staging.example.com npm run build
 
 ## Before publishing
 
-Fill the remaining `TODO`s in `src/data/site.ts`: yo.adv handle and videos, Popback beta link. Review the Popback privacy draft in `src/views/PopbackPrivacy.astro`.
+Fill the remaining `TODO`s in `src/data/site.ts`: yo.adv handle, Popback beta link. Review the Popback privacy draft in `src/views/PopbackPrivacy.astro`.
 
 ## Where things are
 

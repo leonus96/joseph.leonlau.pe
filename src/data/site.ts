@@ -13,8 +13,6 @@ export const yoadv = {
   handle: '@yo.adv', // TODO: confirm handle
   tiktok: 'https://www.tiktok.com/@yo.adv',
   instagram: 'https://www.instagram.com/yo.adv',
-  // TODO: add the URLs of the latest videos (shown as a grid on /yoadv).
-  videos: [] as { title: string; url: string; platform: 'TikTok' | 'Instagram' }[],
 };
 
 export const popback = {

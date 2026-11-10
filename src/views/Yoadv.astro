@@ -13,15 +13,13 @@ const t = {
     title: 'yo.adv — Contenido cristiano en Instagram y TikTok',
     description: 'yo.adv: contenido cristiano en Instagram y TikTok.',
     lead: 'Contenido cristiano en Instagram y TikTok.',
-    latest: 'Últimos videos', footer: 'Un proyecto de Joseph León', more: 'Más proyectos',
-    empty: 'Pronto, los videos más recientes aquí.',
+    footer: 'Un proyecto de Joseph León', more: 'Más proyectos',
   },
   en: {
     title: 'yo.adv — Christian content on Instagram and TikTok',
     description: 'yo.adv: Christian content on Instagram and TikTok.',
     lead: 'Christian content on Instagram and TikTok.',
-    latest: 'Latest videos', footer: 'A project by Joseph León', more: 'More projects',
-    empty: 'The latest videos will show up here soon.',
+    footer: 'A project by Joseph León', more: 'More projects',
   },
 }[lang];
 ---
@@ -53,26 +51,6 @@ const t = {
         <PixelButton href={yoadv.instagram}>Instagram</PixelButton>
       </div>
     </div>
-  </section>
-
-  <section class="wrap flex flex-col gap-6 py-12 md:gap-10 md:py-24" aria-labelledby="latest-h">
-    <div class="flex flex-wrap items-baseline justify-between gap-4">
-      <h2 id="latest-h" class="h-section">{t.latest}</h2>
-      <a href={yoadv.tiktok} target="_blank" rel="noopener" class="font-mono text-sm text-accent-ink">{yoadv.handle} ↗</a>
-    </div>
-    {yoadv.videos.length > 0 ? (
-      <ul class="m-0 grid list-none grid-cols-2 gap-5 p-0 md:grid-cols-4 md:gap-8">
-        {yoadv.videos.map((v) => (
-          <li>
-            <a class="jp-frame jp-frame--shadow flex aspect-[9/16] items-end bg-sunken p-3 no-underline md:p-4" href={v.url} target="_blank" rel="noopener">
-              <span class="flex flex-col gap-1"><span class="text-[15px] font-semibold">{v.title}</span><span class="font-mono text-xs text-muted">{v.platform}</span></span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    ) : (
-      <p class="m-0 text-muted">{t.empty}</p>
-    )}
   </section>
 
   <footer class="border-t-4 border-ink">

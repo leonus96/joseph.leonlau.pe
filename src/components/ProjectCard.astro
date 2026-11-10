@@ -5,10 +5,8 @@ import type { Project } from '../data/projects';
 import { type Lang, path } from '../i18n';
 interface Props { project: Project; lang: Lang; }
 const { project: p, lang } = Astro.props;
-const href = typeof p.href === 'string' ? p.href : path(p.href.route, lang);
-const external = typeof p.href === 'string';
 ---
-<a class="jp-frame jp-frame--shadow jp-card" href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener' : undefined}>
+<a class="jp-frame jp-frame--shadow jp-card" href={path(p.route, lang)}>
   <div class="jp-card__grip" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
   <div class="jp-card__tile" style={`background:${p.tile}`}>
     {p.logo?.kind === 'img' && <img src={p.logo.src} alt="" width={p.logo.width} height={p.logo.height} class="h-10 w-auto md:h-12" />}

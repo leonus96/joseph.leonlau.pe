@@ -6,7 +6,7 @@ const { lang, route, tone = 'dark' } = Astro.props;
 ---
 <div data-theme={tone} class:list={['border-b-4', tone === 'dark' ? 'bg-[#0e0b1a] border-[#f3eedf]' : 'bg-[#fff6e8] border-[#1b1626]']}>
   <div class="wrap flex items-center justify-between gap-4 py-1.5">
-    <a class="pxlabel text-ink" href={path('home', lang)}>◀ Joseph León</a>
+    <a class="pxlabel inline-flex items-center gap-2 text-ink" href={path('home', lang)}>◀ <img src="/favicon.svg" alt="" width="16" height="16" class="pixelated size-4" />Joseph León</a>
     <LangToggle lang={lang} route={route} />
   </div>
 </div>

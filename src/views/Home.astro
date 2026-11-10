@@ -4,6 +4,7 @@ import LangToggle from '../components/LangToggle.astro';
 import PixelButton from '../components/PixelButton.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import Badge from '../components/Badge.astro';
+import PortraitSwap from '../components/PortraitSwap.astro';
 import { projects } from '../data/projects';
 import { site } from '../data/site';
 import type { Lang } from '../i18n';
@@ -17,6 +18,9 @@ const t = {
     description: 'Desarrollador de software. Apps móviles y web: Obsiva, Ginesis, Popback y yo.adv.',
     lead: 'Desarrollador de software. Apps móviles y web, de la idea a producción.',
     write: 'Escríbeme',
+    portraitLabel: 'Joseph León en pixel art. Ver foto',
+    hintHover: '↔ pasa el cursor para ver la foto',
+    hintTouch: '↔ toca para ver la foto',
     projects: 'Proyectos',
     contact: 'Contacto',
     nav: 'Principal',
@@ -26,6 +30,9 @@ const t = {
     description: 'Software developer. Mobile and web apps: Obsiva, Ginesis, Popback and yo.adv.',
     lead: 'Software developer. Mobile and web apps, from idea to production.',
     write: 'Email me',
+    portraitLabel: 'Joseph León in pixel art. See photo',
+    hintHover: '↔ hover to see the photo',
+    hintTouch: '↔ tap to see the photo',
     projects: 'Projects',
     contact: 'Contact',
     nav: 'Main',
@@ -55,7 +62,7 @@ const jsonLd = {
   </header>
 
   <main id="top">
-    <section class="wrap flex flex-col-reverse gap-10 pt-6 pb-14 md:flex-row md:items-center md:justify-between md:gap-16 md:pt-14 md:pb-24">
+    <section class="wrap flex flex-col-reverse gap-8 pt-4 pb-14 md:flex-row md:items-center md:justify-between md:gap-12 md:pt-8 md:pb-16">
       <div class="flex flex-1 flex-col gap-6 md:gap-7">
         <h1 class="h-name">Joseph<br />León</h1>
         <p class="m-0 max-w-[460px] text-[19px] leading-7 md:text-2xl md:leading-[34px]">{t.lead}</p>
@@ -65,9 +72,7 @@ const jsonLd = {
           <PixelButton href={site.links.linkedin}>LinkedIn</PixelButton>
         </div>
       </div>
-      <div class="jp-frame jp-frame--shadow w-[216px] shrink-0 leading-none md:w-[360px]">
-        <img src="/joseph-pixel.png" alt="Joseph León" width="360" height="480" class="pixelated block h-auto w-full" fetchpriority="high" />
-      </div>
+      <PortraitSwap art="/joseph-pixel.png" artDark="/joseph-pixel-dark.png" photo="/joseph-photo.webp" label={t.portraitLabel} hintHover={t.hintHover} hintTouch={t.hintTouch} />
     </section>
 
     <div class="dither" aria-hidden="true"></div>

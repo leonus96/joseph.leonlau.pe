@@ -1,0 +1,146 @@
+---
+/**
+ * Pixel-art portrait (no frame, on the page background) that turns into the real photo.
+ * Mouse: hover. Touch: tap. Keyboard: Enter/Space. The photo "de-pixelates" in steps;
+ * with prefers-reduced-motion it simply swaps.
+ */
+interface Props {
+  art: string;        // pixel art, 1x, transparent background
+  artDark?: string;   // same art with a lighter outline for dark pages
+  photo: string;      // cut-out photo with the exact same framing and alpha
+  label: string;      // accessible name of the toggle
+  hintHover: string;  // hint on devices with a mouse
+  hintTouch: string;  // hint on touch devices
+  artWidth?: number;
+  artHeight?: number;
+}
+const { art, artDark, photo, label, hintHover, hintTouch, artWidth = 124, artHeight = 124 } = Astro.props;
+---
+<figure class="portrait m-0 shrink-0" data-portrait data-photo={photo} data-cols={artWidth}>
+  <button type="button" class="portrait__btn" aria-pressed="false" aria-label={label} style={`aspect-ratio:${artWidth}/${artHeight}`}>
+    <picture>
+      {artDark && <source srcset={artDark} media="(prefers-color-scheme: dark)" />}
+      <img class="portrait__art pixelated" src={art} alt="" width={artWidth} height={artHeight} fetchpriority="high" />
+    </picture>
+    <canvas class="portrait__photo" aria-hidden="true"></canvas>
+  </button>
+  <figcaption class="portrait__hint" aria-hidden="true">
+    <span class="portrait__hint--hover">{hintHover}</span>
+    <span class="portrait__hint--touch">{hintTouch}</span>
+  </figcaption>
+</figure>
+
+<style>
+  .portrait { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .portrait__btn {
+    position: relative; display: block; padding: 0; border: 0; background: transparent; cursor: pointer;
+    width: 248px; line-height: 0;
+  }
+  @media (min-width: 768px) { .portrait__btn { width: 372px; } }
+  @media (min-width: 1100px) { .portrait__btn { width: 496px; } }
+  .portrait__art, .portrait__photo { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .portrait__photo { opacity: 0; pointer-events: none; }
+  .portrait__photo.is-on { opacity: 1; }
+  .portrait__art.is-hidden { opacity: 0; }
+  .portrait__hint { font-family: var(--font-mono); font-size: 12px; line-height: 16px; color: var(--ink-muted); }
+  .portrait__hint--touch { display: none; }
+  @media (hover: none) {
+    .portrait__hint--hover { display: none; }
+    .portrait__hint--touch { display: inline; }
+  }
+</style>
+
+<script>
+  const STEP_MS = 70;
+  const reduce = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  for (const fig of document.querySelectorAll<HTMLElement>('[data-portrait]')) {
+    const btn = fig.querySelector<HTMLButtonElement>('.portrait__btn')!;
+    const art = fig.querySelector<HTMLImageElement>('.portrait__art')!;
+    const canvas = fig.querySelector<HTMLCanvasElement>('.portrait__photo')!;
+    const ctx = canvas.getContext('2d')!;
+    const cols = Number(fig.dataset.cols) || 124;
+    const steps = [cols, cols * 2, cols * 4, 0];   // 0 = full resolution
+    const photo = new Image();
+    photo.decoding = 'async';
+    let ready = false;
+    let level = -1;          // -1 = pixel art only, 0..steps.length-1 = photo at that step
+    let target = -1;
+    let timer = 0;
+    let lastPointer = 'mouse';
+    let sized = false;
+
+    const load = () => {
+      if (photo.src) return;
+      photo.onload = () => { ready = true; if (target !== level) tick(); };
+      photo.src = fig.dataset.photo!;
+    };
+    if ('requestIdleCallback' in window) window.requestIdleCallback(load, { timeout: 2500 });
+    else window.setTimeout(load, 1200);
+
+    const size = () => {
+      const r = btn.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.max(1, Math.round(r.width * dpr));
+      canvas.height = Math.max(1, Math.round(r.height * dpr));
+      sized = true;
+    };
+
+    const draw = (i: number) => {
+      if (!ready) return;
+      if (!sized) size();
+      const w = canvas.width, h = canvas.height;
+      const c = steps[i];
+      ctx.clearRect(0, 0, w, h);
+      if (c === 0) {
+        ctx.imageSmoothingEnabled = true;
+        ctx.drawImage(photo, 0, 0, w, h);
+      } else {
+        const rows = Math.round(c * h / w);
+        const off = document.createElement('canvas');
+        off.width = c; off.height = rows;
+        const o = off.getContext('2d')!;
+        o.imageSmoothingEnabled = true;
+        o.imageSmoothingQuality = 'high';
+        o.drawImage(photo, 0, 0, c, rows);
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(off, 0, 0, w, h);
+      }
+    };
+
+    const render = () => {
+      if (level < 0) { canvas.classList.remove('is-on'); art.classList.remove('is-hidden'); return; }
+      draw(level);
+      canvas.classList.add('is-on');
+      art.classList.add('is-hidden');   // no background behind the cut-out, so hide the art underneath
+    };
+
+    function tick() {
+      window.clearTimeout(timer);
+      if (!ready) { load(); return; }
+      if (reduce()) { level = target >= 0 ? steps.length - 1 : -1; render(); return; }
+      if (level === target) return;
+      level += target > level ? 1 : -1;
+      render();
+      if (level !== target) timer = window.setTimeout(tick, STEP_MS);
+    }
+
+    const show = (on: boolean) => {
+      target = on ? steps.length - 1 : -1;
+      btn.setAttribute('aria-pressed', String(on));
+      load();
+      tick();
+    };
+
+    btn.addEventListener('pointerdown', (e) => { lastPointer = e.pointerType || 'mouse'; });
+    btn.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') show(true); });
+    btn.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') show(false); });
+    btn.addEventListener('click', (e) => {
+      // mouse users already toggle on hover; taps and keyboard toggle here
+      const viaMouse = lastPointer === 'mouse' && (e as MouseEvent).detail > 0;
+      if (!viaMouse) show(btn.getAttribute('aria-pressed') !== 'true');
+      lastPointer = 'mouse';
+    });
+    window.addEventListener('resize', () => { size(); if (level >= 0) draw(level); });
+  }
+</script>

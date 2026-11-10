@@ -33,4 +33,4 @@ Fill the remaining `TODO`s in `src/data/site.ts`: yo.adv handle and videos, Popb
 
 - Tokens and components (`jp-*`): `src/styles/global.css` — from the "Joseph León" design system.
 - Projects: `src/data/projects.ts`. Pages: `src/views/*` (one view per page, `lang` prop), thin route files in `src/pages/`.
-- Photo: `public/joseph-pixel.png` (72×96, 16 colors, ×10). Source variants in `design/`.
+- Portrait: `src/components/PortraitSwap.astro`. Pixel art `public/joseph-pixel.png` (124×124, no frame, transparent, pixel dissolve at the bottom; `joseph-pixel-dark.png` for dark mode; shown at ×4 / ×3 / ×2) turns into `public/joseph-photo.webp` (same framing) on hover, tap or Enter, de-pixelating in steps; fades only with reduced motion. Iterations in `design/`.

@@ -2,8 +2,8 @@
 /**
  * Pixel-art portrait (no frame, on the page background) that turns into the real photo.
  * On its own it swaps every few seconds; mouse hover, tap or Enter/Space take over.
- * The photo "de-pixelates" in steps. With prefers-reduced-motion there is no auto swap
- * and a manual swap is instant.
+ * Transition: the art's pixels turn into the photo's one by one, then the photo sharpens.
+ * With prefers-reduced-motion there is no auto swap and a manual swap is instant.
  */
 interface Props {
   art: string;        // pixel art, 1x, transparent background
@@ -41,9 +41,13 @@ const { art, artDark, photo, label, artWidth = 124, artHeight = 124 } = Astro.pr
 </style>
 
 <script>
-  const STEP_MS = 70;          // one de-pixelation step
-  const ART_MS = 5000;         // auto cycle: time on the pixel art
-  const PHOTO_MS = 2600;       // auto cycle: time on the photo
+  // Transition = frames. 0 is the pixel art (the <img>); 1..DISSOLVE swap the art's pixels for the photo's,
+  // one random pixel at a time; then the photo sharpens through SHARPEN resolutions to full detail.
+  const DISSOLVE = 14, DISSOLVE_MS = 45;
+  const SHARPEN = [2, 4, 0], SHARPEN_MS = 95;      // multiples of the art's columns; 0 = full resolution
+  const LAST = DISSOLVE + SHARPEN.length;
+  const ART_MS = 5000;         // auto cycle: time resting on the pixel art
+  const PHOTO_MS = 3400;       // auto cycle: time on the photo (transition included)
   const FIRST_MS = 2500;       // first auto swap after load
   const reduce = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -53,22 +57,26 @@ const { art, artDark, photo, label, artWidth = 124, artHeight = 124 } = Astro.pr
     const canvas = fig.querySelector<HTMLCanvasElement>('.portrait__photo')!;
     const ctx = canvas.getContext('2d')!;
     const cols = Number(fig.dataset.cols) || 124;
-    const steps = [cols, cols * 2, cols * 4, 0];   // 0 = full resolution
     const photo = new Image();
     photo.decoding = 'async';
     let ready = false;
-    let level = -1;          // -1 = pixel art only, 0..steps.length-1 = photo at that step
-    let target = -1;
-    let timer = 0;
+    let frame = 0, target = 0, timer = 0;
     let lastPointer = 'mouse';
     let sized = false;
     let held = false;        // the visitor is controlling it (hover or a tap/keyboard toggle)
     let visible = true;
     let autoTimer = 0;
 
+    // low-res buffers: the art and the photo at the art's resolution, and a random order for the pixels
+    let rows = cols;
+    const small = document.createElement('canvas');
+    const sctx = small.getContext('2d', { willReadFrequently: true })!;
+    let artPx: ImageData | null = null, photoPx: ImageData | null = null, mix: ImageData | null = null;
+    let order: Float32Array | null = null;
+
     const load = () => {
       if (photo.src) return;
-      photo.onload = () => { ready = true; if (target !== level) tick(); };
+      photo.onload = () => { ready = true; if (target !== frame) tick(); };
       photo.src = fig.dataset.photo!;
     };
     if ('requestIdleCallback' in window) window.requestIdleCallback(load, { timeout: 2500 });
@@ -82,47 +90,72 @@ const { art, artDark, photo, label, artWidth = 124, artHeight = 124 } = Astro.pr
       sized = true;
     };
 
-    const draw = (i: number) => {
-      if (!ready) return;
+    const prepare = () => {
+      rows = Math.round(cols * (art.naturalHeight || cols) / (art.naturalWidth || cols));
+      small.width = cols; small.height = rows;
+      sctx.imageSmoothingEnabled = false;
+      sctx.clearRect(0, 0, cols, rows); sctx.drawImage(art, 0, 0, cols, rows);   // currentSrc: light or dark art
+      artPx = sctx.getImageData(0, 0, cols, rows);
+      sctx.imageSmoothingEnabled = true; sctx.imageSmoothingQuality = 'high';
+      sctx.clearRect(0, 0, cols, rows); sctx.drawImage(photo, 0, 0, cols, rows);
+      photoPx = sctx.getImageData(0, 0, cols, rows);
+      mix = sctx.createImageData(cols, rows);
+      if (!order) { order = new Float32Array(cols * rows); for (let i = 0; i < order.length; i++) order[i] = Math.random(); }
+    };
+
+    const blit = (src: CanvasImageSource) => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(src, 0, 0, canvas.width, canvas.height);
+    };
+
+    const draw = () => {
       if (!sized) size();
-      const w = canvas.width, h = canvas.height;
-      const c = steps[i];
-      ctx.clearRect(0, 0, w, h);
-      if (c === 0) {
-        ctx.imageSmoothingEnabled = true;
-        ctx.drawImage(photo, 0, 0, w, h);
-      } else {
-        const rows = Math.round(c * h / w);
-        const off = document.createElement('canvas');
-        off.width = c; off.height = rows;
-        const o = off.getContext('2d')!;
-        o.imageSmoothingEnabled = true;
-        o.imageSmoothingQuality = 'high';
-        o.drawImage(photo, 0, 0, c, rows);
-        ctx.imageSmoothingEnabled = false;
-        ctx.drawImage(off, 0, 0, w, h);
+      if (frame <= DISSOLVE) {
+        const t = frame / DISSOLVE, a = artPx!.data, p = photoPx!.data, m = mix!.data;
+        for (let i = 0, n = order!.length; i < n; i++) {
+          const s = order![i] < t ? p : a, k = i * 4;
+          m[k] = s[k]; m[k + 1] = s[k + 1]; m[k + 2] = s[k + 2]; m[k + 3] = s[k + 3];
+        }
+        sctx.putImageData(mix!, 0, 0);
+        blit(small);
+        return;
       }
+      const mult = SHARPEN[frame - DISSOLVE - 1];
+      if (mult === 0) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.imageSmoothingEnabled = true;
+        ctx.drawImage(photo, 0, 0, canvas.width, canvas.height);
+        return;
+      }
+      const off = document.createElement('canvas');
+      off.width = cols * mult; off.height = rows * mult;
+      const o = off.getContext('2d')!;
+      o.imageSmoothingEnabled = true; o.imageSmoothingQuality = 'high';
+      o.drawImage(photo, 0, 0, off.width, off.height);
+      blit(off);
     };
 
     const render = () => {
-      if (level < 0) { canvas.classList.remove('is-on'); art.classList.remove('is-hidden'); return; }
-      draw(level);
+      if (frame === 0) { canvas.classList.remove('is-on'); art.classList.remove('is-hidden'); return; }
+      draw();
       canvas.classList.add('is-on');
-      art.classList.add('is-hidden');   // no background behind the cut-out, so hide the art underneath
+      art.classList.add('is-hidden');   // the canvas carries both images during the transition
     };
 
     function tick() {
       window.clearTimeout(timer);
       if (!ready) { load(); return; }
-      if (reduce()) { level = target >= 0 ? steps.length - 1 : -1; render(); return; }
-      if (level === target) return;
-      level += target > level ? 1 : -1;
+      if (frame === 0 && target > 0) prepare();
+      if (reduce()) { frame = target; render(); return; }
+      if (frame === target) return;
+      frame += target > frame ? 1 : -1;
       render();
-      if (level !== target) timer = window.setTimeout(tick, STEP_MS);
+      if (frame !== target) timer = window.setTimeout(tick, frame < DISSOLVE || (frame === DISSOLVE && target < frame) ? DISSOLVE_MS : SHARPEN_MS);
     }
 
     const show = (on: boolean) => {
-      target = on ? steps.length - 1 : -1;
+      target = on ? LAST : 0;
       load();
       tick();
     };
@@ -135,7 +168,7 @@ const { art, artDark, photo, label, artWidth = 124, artHeight = 124 } = Astro.pr
     };
     function autoStep() {
       if (held || !visible || document.hidden || !ready) { load(); schedule(1000); return; }
-      const on = target < 0;
+      const on = target === 0;
       show(on);
       schedule(on ? PHOTO_MS : ART_MS);
     }
@@ -158,6 +191,6 @@ const { art, artDark, photo, label, artWidth = 124, artHeight = 124 } = Astro.pr
       if (!viaMouse) takeOver(btn.getAttribute('aria-pressed') !== 'true');
       lastPointer = 'mouse';
     });
-    window.addEventListener('resize', () => { size(); if (level >= 0) draw(level); });
+    window.addEventListener('resize', () => { size(); if (frame > 0) draw(); });
   }
 </script>
